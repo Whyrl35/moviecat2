@@ -1,3 +1,11 @@
+# Editors
+.vscode/
+.idea/
+
+# Apps file to ignore
+app.db
+conf.yml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
