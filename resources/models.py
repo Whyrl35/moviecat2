@@ -4,13 +4,13 @@ from run import db
 class UserModel(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)                            # pylint: disable=no-member
+    username = db.Column(db.String(120), unique=True, nullable=False)       # pylint: disable=no-member
+    password = db.Column(db.String(120), nullable=False)                    # pylint: disable=no-member
 
     def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+        db.session.add(self)                                                # pylint: disable=no-member
+        db.session.commit()                                                 # pylint: disable=no-member
 
     @classmethod
     def find_by_username(cls, username):
@@ -45,12 +45,12 @@ class UserModel(db.Model):
 
 class RevokedTokenModel(db.Model):
     __tablename__ = 'revoked_tokens'
-    id = db.Column(db.Integer, primary_key=True)
-    jti = db.Column(db.String(120))
+    id = db.Column(db.Integer, primary_key=True)                            # pylint: disable=no-member
+    jti = db.Column(db.String(120))                                         # pylint: disable=no-member
 
     def add(self):
-        db.session.add(self)
-        db.session.commit()
+        db.session.add(self)                                                # pylint: disable=no-member
+        db.session.commit()                                                 # pylint: disable=no-member
 
     @classmethod
     def is_jti_blacklisted(cls, jti):
