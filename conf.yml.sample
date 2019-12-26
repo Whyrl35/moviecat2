@@ -13,6 +13,7 @@ database:
     port: 3306
     user: moviecat
     password: moviecat
+    database: moviecat
 
 ##
 ## Super user

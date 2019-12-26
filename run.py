@@ -19,7 +19,7 @@ app.config['DATABASE'] = configuration['database']
 api = Api(app)
 jwt = JWTManager(app)
 
-from resources import *
+from resources import *                                                     # pylint: disable=unused-wildcard-import
 
 
 @jwt.token_in_blacklist_loader
