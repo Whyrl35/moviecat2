@@ -1,1 +1,3 @@
 jwt_secret_key: '__your__very__secret__'
+superadmin:
+  - admin

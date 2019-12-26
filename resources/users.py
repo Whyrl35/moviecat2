@@ -2,7 +2,7 @@
 from flask import request
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
-from run import api
+from run import app, api
 from .models import UserModel, RevokedTokenModel
 
 
@@ -118,14 +118,18 @@ class DevToken(Resource):
 
 class AllUsers(Resource):
     # @swag_from('./../docs/all_users.yml')
+    @jwt_required
     def get(self):
-        if request.remote_addr != '127.0.0.1':
+        current_user = get_jwt_identity()
+        if current_user not in app.config['SUPERADMIN_USERS']:
             return {'message': "Your are'nt authorized to access this route"}, 401
         return UserModel.return_all()
 
     # @swag_from('./../docs/all_users.yml')
+    @jwt_required
     def delete(self):
-        if request.remote_addr != '127.0.0.1':
+        current_user = get_jwt_identity()
+        if current_user not in app.config['SUPERADMIN_USERS']:
             return {'message': "Your are'nt authorized to access this route"}, 401
         return UserModel.delete_all()
 
