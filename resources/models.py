@@ -1,5 +1,16 @@
 from passlib.hash import pbkdf2_sha256 as sha256
-from run import db
+from flask_sqlalchemy import SQLAlchemy
+from run import app
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 
 class UserModel(db.Model):
     __tablename__ = 'users'
