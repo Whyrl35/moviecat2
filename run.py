@@ -14,6 +14,7 @@ app.config['JWT_AUTH_URL_RULE'] = '/api/auth'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['SUPERADMIN_USERS'] = configuration['superadmin']
+app.config['DATABASE'] = configuration['database']
 
 api = Api(app)
 jwt = JWTManager(app)

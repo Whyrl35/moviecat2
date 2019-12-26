@@ -1,3 +1,20 @@
-jwt_secret_key: '__your__very__secret__'
+##
+## Secret key that is used to encode all token
+jwt_secret_key: '__your_very_secret__'
+
+##
+## Database type and access
+database:
+  type: sqlite
+  sqlite:
+    uri: sqlite:///app.db
+  mysql:
+    host: localhost
+    port: 3306
+    login: moviecat
+    password: moviecat
+
+##
+## Super user
 superadmin:
   - admin

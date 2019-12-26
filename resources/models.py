@@ -2,7 +2,10 @@ from passlib.hash import pbkdf2_sha256 as sha256
 from flask_sqlalchemy import SQLAlchemy
 from run import app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+if app.config['DATABASE']['type'] == 'sqlite':
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE']['sqlite']['uri']
+else:
+    pass
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
