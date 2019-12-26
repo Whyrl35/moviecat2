@@ -11,7 +11,7 @@ database:
   mysql:
     host: localhost
     port: 3306
-    login: moviecat
+    user: moviecat
     password: moviecat
 
 ##
