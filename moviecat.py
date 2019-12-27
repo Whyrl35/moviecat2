@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# This file is USED by the wsgi engine
+
 # Defining local venv environment
 HOME = os.path.dirname(os.path.realpath(__file__))
 VENV = HOME + '/venv'
@@ -23,7 +25,7 @@ sys.path.insert(0, '{v}/lib'.format(v=VENV))
 sys.path.insert(0, '{v}'.format(v=HOME))
 
 # Load the default app
-from run import app as application  # noqa
+from run import app
 
 # Propagate the exceptions to get the right message in json
-application.config.update(PROPAGATE_EXCEPTIONS=True)
+app.config.update(PROPAGATE_EXCEPTIONS=True)
