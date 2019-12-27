@@ -7,7 +7,7 @@ from .models import MovieModel, ActorModel, RealisatorModel
 class Actors(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('id', action='append', required=False, help="List of actor's id")
+        parser.add_argument('id', type=int, action='append', required=False, help="List of actor's id")
         args = parser.parse_args()
 
         if args.id:
@@ -24,7 +24,56 @@ class Actors(Resource):
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args
-        }
+        }, 200
+
+    @jwt_required
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('actors', type=list, location='json', required=True, help="Missing the first name of the actor")
+        args = parser.parse_args()
+        actors_list = list()
+
+        for actor in args.actors:
+            found_actor = ActorModel.find_by_name(actor['first_name'], actor['last_name'])
+            if found_actor:
+                actors_list.append(found_actor)
+            else:
+                new_actor = ActorModel()
+                new_actor.first_name = actor['first_name']
+                new_actor.last_name = actor['last_name']
+                new_actor.save_to_db()
+                actors_list.append(ActorModel.to_json(new_actor))
+
+        actors = {'actors': actors_list}
+        return {
+            "data": actors,
+            "message": "Successfuly adding the actor list",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": args
+        }, 201
+
+    @jwt_required
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=int, action='append', required=True, help="Missing list of actor's id")
+        args = parser.parse_args()
+
+        actors_list = list()
+        for id in args.id:
+            actor = ActorModel.find_by_id(id)
+            if actor:
+                ActorModel.delete_by_id(id)
+                actors_list.append(actor)
+
+        actors = {'actors': actors_list}
+        return {
+            "data": actors,
+            "message": "Successfuly deleting the actor list",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": args
+        }, 201
 
 
 class Actor(Resource):
@@ -67,7 +116,6 @@ class Actor(Resource):
         parser.add_argument('last_name', type=str, required=True, help="Missing the last name of the actor")
         args = parser.parse_args()
 
-        # FIXME: check if the actor already exist, return a 20x to let the user know
         actor = ActorModel.find_by_name(args.first_name, args.last_name)
         if actor:
             return {
@@ -99,10 +147,6 @@ class Actor(Resource):
             "cls": self.__class__.__name__,
             "args": args
             }, 201
-
-    @jwt_required
-    def put(self, id):
-        pass
 
     @jwt_required
     def delete(self):

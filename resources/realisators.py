@@ -5,34 +5,34 @@ from .models import MovieModel, ActorModel, RealisatorModel
 
 
 class Realisators(Resource):
-    def get(self, id):
+    def get(self):
         pass
 
     @jwt_required
-    def post(self, id):
+    def post(self):
         pass
 
     @jwt_required
-    def put(self, id):
+    def put(self):
         pass
 
     @jwt_required
-    def delete(self, id):
+    def delete(self):
         pass
 
 
 class Realisator(Resource):
-    def get(self, id):
+    def get(self):
         pass
 
     @jwt_required
-    def post(self, id):
+    def post(self):
         pass
 
     @jwt_required
-    def put(self, id):
+    def put(self):
         pass
 
     @jwt_required
-    def delete(self, id):
+    def delete(self):
         pass
