@@ -4,25 +4,7 @@ from run import app, api
 from .models import MovieModel, ActorModel, RealisatorModel
 
 
-class Movies(Resource):
-    # @swag_from('./../docs/movies_list.yml')
-    def get(self, **kwargs):
-        pass
-
-    @jwt_required
-    def post(self, id):
-        pass
-
-    @jwt_required
-    def put(self, id):
-        pass
-
-    @jwt_required
-    def delete(self, id):
-        pass
-
-
-class Movie(Resource):
+class Realisators(Resource):
     def get(self, id):
         pass
 
@@ -39,6 +21,18 @@ class Movie(Resource):
         pass
 
 
+class Realisator(Resource):
+    def get(self, id):
+        pass
 
+    @jwt_required
+    def post(self, id):
+        pass
 
+    @jwt_required
+    def put(self, id):
+        pass
 
+    @jwt_required
+    def delete(self, id):
+        pass
