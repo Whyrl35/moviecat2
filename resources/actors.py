@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from run import app, api
-from .models import MovieModel, ActorModel, RealisatorModel
+from .models import ActorModel
 
 
 class Actors(Resource):
@@ -29,7 +29,7 @@ class Actors(Resource):
     @jwt_required
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('actors', type=list, location='json', required=True, help="Missing the first name of the actor")
+        parser.add_argument('actors', type=list, location='json', required=True, help="Missing the actor's list")
         args = parser.parse_args()
         actors_list = list()
 

@@ -167,3 +167,38 @@ class RealisatorModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement="auto")
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def to_json(actor):
+        return {
+            'id': actor.id,
+            'first_name': actor.first_name,
+            'last_name': actor.last_name
+        }
+
+    @classmethod
+    def find_by_name(cls, first_name, last_name):
+        actor = cls.query.filter_by(first_name=first_name, last_name=last_name).first()
+        if actor:
+            return dict(cls.to_json(actor))
+        return None
+
+    @classmethod
+    def find_by_id(cls, id):
+        actor = cls.query.filter_by(id=id).first()
+        if actor:
+            return dict(cls.to_json(actor))
+        return None
+
+    @classmethod
+    def return_all(cls):
+        return list(map(lambda x: cls.to_json(x), cls.query.all()))
+
+    @classmethod
+    def delete_by_id(cls, id):
+        cls.query.filter_by(id=id).delete()
+        db.session.commit()
