@@ -77,20 +77,20 @@ class RevokedTokenModel(db.Model):
         return bool(query)
 
 
-movie_actors = db.Table('actors',
+movie_actors = db.Table('movie_actors',
     db.Column('movie_id', db.Integer, db.ForeignKey('movie.id'), primary_key=True),
     db.Column('actor_id', db.Integer, db.ForeignKey('actor.id'), primary_key=True),
 )
-movie_realisators = db.Table('realisators',
+movie_realisators = db.Table('movie_realisators',
     db.Column('movie_id', db.Integer, db.ForeignKey('movie.id'), primary_key=True),
     db.Column('realisator_id', db.Integer, db.ForeignKey('realisator.id'), primary_key=True),
 )
 
 
-class Movie(db.Model):
-    __tablename__ = 'movies'
+class MovieModel(db.Model):
+    __tablename__ = 'movie'
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement="auto")
     title = db.Column(db.String(255), nullable=False)
     title_original = db.Column(db.String(255))
     genre = db.Column(db.String(255))
@@ -100,13 +100,13 @@ class Movie(db.Model):
     score = db.Column(db.Integer)
     synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)
-    actors = db.relationship('Actor', secondary=movie_actors,
+    actors = db.relationship('ActorModel', secondary=movie_actors,
                              lazy='subquery',
-                             backref=db.backref('movies', primary_key=True))
-    realisator = db.relationship('Realisator',
+                             backref=db.backref('movie'))
+    realisator = db.relationship('RealisatorModel',
                                  secondary=movie_realisators,
                                  lazy='subquery',
-                                 backref=db.backref('movies', primary_key=True))
+                                 backref=db.backref('movie'))
     synopsis = db.Column(db.Text)
     seen = db.Column(db.Boolean, nullable=False)
     trailer = db.Column(db.String(255))
@@ -118,17 +118,52 @@ class Movie(db.Model):
     series_episode_duration = db.Column(db.Integer)
 
 
-class Actor(db.Model):
-    __tablename__ = 'actors'
+class ActorModel(db.Model):
+    __tablename__ = 'actor'
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement="auto")
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
 
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
-class Realisator(db.Model):
-    __tablename__ = 'realisators'
+    @staticmethod
+    def to_json(actor):
+        return {
+            'id': actor.id,
+            'first_name': actor.first_name,
+            'last_name': actor.last_name
+        }
+
+    @classmethod
+    def find_by_name(cls, first_name, last_name):
+        actor = cls.query.filter_by(first_name=first_name, last_name=last_name).first()
+        if actor:
+            return dict(cls.to_json(actor))
+        return None
+
+    @classmethod
+    def find_by_id(cls, id):
+        actor = cls.query.filter_by(id=id).first()
+        if actor:
+            return dict(cls.to_json(actor))
+        return None
+
+    @classmethod
+    def return_all(cls):
+        return list(map(lambda x: cls.to_json(x), cls.query.all()))
+
+    @classmethod
+    def delete_by_id(cls, id):
+        cls.query.filter_by(id=id).delete()
+        db.session.commit()
+
+
+class RealisatorModel(db.Model):
+    __tablename__ = 'realisator'
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement="auto")
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
