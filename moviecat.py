@@ -1,6 +1,8 @@
-#!/usr/bin/env python
-
+#
 # This file is USED by the wsgi engine
+
+import sys
+import os
 
 # Defining local venv environment
 HOME = os.path.dirname(os.path.realpath(__file__))
@@ -11,9 +13,6 @@ PYTHON_BIN = VENV + '/bin/python3'
 activate_this = "{}/bin/activate_this.py".format(VENV)
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
-
-import sys
-import os
 
 # If not in python3, restart with python3
 if sys.executable != PYTHON_BIN:
