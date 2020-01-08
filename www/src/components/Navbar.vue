@@ -1,7 +1,7 @@
 <template>
     <div>
       <b-navbar toggleable="lg" type="dark" variant="dark" class="mb-3">
-        <b-container>
+        <b-container fluid>
             <b-navbar-brand href="#">MovieCat</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
@@ -16,13 +16,13 @@
                     size="sm"
                     class="mr-sm-2"
                     placeholder="Search for a movie"
-                    v-model="meal"
+                    v-model="movies"
                     ></b-form-input>
                   <b-button
                     size="sm"
                     class="my-2 my-sm-0"
                     type="submit"
-                    @click.prevent="getMeal"
+                    @click.prevent="getMovie"
                     >Search</b-button>
                 </b-nav-form>
                 <b-nav-item-dropdown right>
@@ -41,11 +41,11 @@
 export default {
     data() {
         return {
-            meal: ''
+            movies: ''
         }
     },
   methods: {
-    getMeal() {
+    getMovie() {
     }
   }
 }

@@ -154,9 +154,9 @@ class Realisator(Resource):
         parser.add_argument('id', type=int, required=True, help="Missing the ID of the realisator")
         args = parser.parse_args()
 
-        if True: #try:
+        try:
             RealisatorModel.delete_by_id(args.id)
-        else: # except:
+        except:
             return {
                 "data": None,
                 "error": "Error during realisator deletion, or it don't exists",

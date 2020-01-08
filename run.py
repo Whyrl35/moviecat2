@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 # from flasgger import Swagger, LazyJSONEncoder
 import yaml
 
@@ -8,6 +9,7 @@ with open("conf.yml", 'r') as config_file:
     configuration = yaml.load(config_file, Loader=yaml.FullLoader)
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['JWT_SECRET_KEY'] = configuration['jwt_secret_key']
 app.config['JWT_AUTH_URL_RULE'] = '/api/auth'

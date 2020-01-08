@@ -7,20 +7,47 @@ from .models import MovieModel, ActorModel, RealisatorModel
 class Movies(Resource):
     # @swag_from('./../docs/movies_list.yml')
     def get(self):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=int, action='append', required=False, help="List of movie's id")
+        args = parser.parse_args()
 
-    @jwt_required
-    def post(self):
-        pass
+        if args.id:
+            movies_list = list()
+            for id in args.id:
+                movies_list.append(MovieModel.find_by_id(id))
+            movies = {'movies': movies_list}
+        else:
+            movies = {'movies': MovieModel.return_all()}
 
-    @jwt_required
-    def put(self):
-        pass
+        return {
+            "data": movies,
+            "message": "Successfuly returning the movie list",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": args
+        }, 200
 
     @jwt_required
     def delete(self):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=int, action='append', required=True, help="Missing list of movie's id")
+        args = parser.parse_args()
 
+        movies_list = list()
+        for id in args.id:
+            movie = MovieModel.find_by_id(id)
+            if movie:
+                MovieModel.delete_by_id(id)
+                movies_list.append(movie)
+
+        movies = {'movies': movies_list}
+        return {
+            "data": movies,
+            "message": "Successfuly deleting the realisator list",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": args
+        }, 201
 
 class Movie(Resource):
     def get(self):
@@ -151,10 +178,6 @@ class Movie(Resource):
             "cls": self.__class__.__name__,
             "args": args
             }, 201
-
-    @jwt_required
-    def put(self):
-        pass
 
     @jwt_required
     def delete(self):

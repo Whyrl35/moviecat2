@@ -166,6 +166,10 @@ class MovieModel(db.Model):
         return None
 
     @classmethod
+    def return_all(cls):
+        return list(map(lambda x: cls.to_json(x), cls.query.all()))
+
+    @classmethod
     def delete_by_id(cls, id):
         movie = cls.query.filter_by(id=id).first()
         if not movie:

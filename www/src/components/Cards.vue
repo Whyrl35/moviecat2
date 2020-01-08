@@ -1,26 +1,27 @@
 <template>
-  <b-container>
-    <div v-if="meals.length">
+  <b-container fluid>
+    <div v-if="movies.length">
       <b-row>
-        <div v-bind:key="data.index" v-for="data in meals">
+        <div v-bind:key="data.id" v-for="data in movies">
           <b-col l="4">
             <b-card
-              v-bind:title="data.strCategory"
-              v-bind:img-src="data.strCategoryThumb"
+              v-bind:title="data.title"
+              v-bind:sub-title="data.title_original"
+              v-bind:img-src="data.poster"
               img-alt="Image"
               img-top
-              tag="article"
+              tag="movies"
               style="max-width: 20rem;"
               class="mb-2">
-              <b-card-text>{{ `${data.strCategoryDescription.slice(0,100)}...` }}</b-card-text>
-              <b-button href="#" variant="primary">View food</b-button>
+              <b-card-text>{{ `${data.synopsis.slice(0,100)}...` }}</b-card-text>
+              <b-button href="#" variant="primary">View details</b-button>
             </b-card>
           </b-col>
         </div>
       </b-row>
     </div>
     <div v-else>
-      <h5>No meals available yet 😢</h5>
+      <h5>No movies available yet 😢</h5>
     </div>
   </b-container>
 </template>
@@ -30,16 +31,17 @@ import axios from "axios";
 export default {
   data() {
     return {
-      meals: []
+      movies: []
     };
   },
   mounted() {
     axios
-      .get("https://www.themealdb.com/api/json/v1/1/categories.php")
+      .get("http://localhost:5000/v1/movies")
       .then(response => {
-        this.meals = response.data.categories;
+        this.movies = response.data.data.movies;
       })
       .catch(err => {
+        this.movies = []
         console.log(err);
       });
   }
