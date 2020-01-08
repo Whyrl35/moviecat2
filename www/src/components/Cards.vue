@@ -23,6 +23,19 @@
     <div v-else>
       <h5>No movies available yet 😢</h5>
     </div>
+    <div>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="rows"
+        :per-page="perPage"
+        first-text="First"
+        prev-text="Prev"
+        next-text="Next"
+        last-text="Last"
+        align="center"
+        >
+      </b-pagination>
+    </div>
   </b-container>
 </template>
 
@@ -31,7 +44,9 @@ import axios from "axios";
 export default {
   data() {
     return {
-      movies: []
+      movies: [],
+      currentPage: 1,
+      perPage: 12
     };
   },
   mounted() {
@@ -44,6 +59,11 @@ export default {
         this.movies = []
         console.log(err);
       });
+  },
+  computed: {
+      rows() {
+        return this.movies.length
+    }
   }
 };
 </script>
