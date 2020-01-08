@@ -78,12 +78,12 @@ class RevokedTokenModel(db.Model):
 
 
 movie_actors = db.Table('movie_actors',
-    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id'), primary_key=True),
-    db.Column('actor_id', db.Integer, db.ForeignKey('actor.id'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
+    db.Column('actor_id', db.Integer, db.ForeignKey('actor.id')),
 )
 movie_realisators = db.Table('movie_realisators',
-    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id'), primary_key=True),
-    db.Column('realisator_id', db.Integer, db.ForeignKey('realisator.id'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
+    db.Column('realisator_id', db.Integer, db.ForeignKey('realisator.id')),
 )
 
 
@@ -99,15 +99,15 @@ class MovieModel(db.Model):
     duration = db.Column(db.Integer)
     score = db.Column(db.Integer)
     synopsis = db.Column(db.Text)
-    synopsis = db.Column(db.Text)
     actors = db.relationship('ActorModel', secondary=movie_actors,
                              lazy='subquery',
+                             cascade='all',
                              backref=db.backref('movie'))
     realisator = db.relationship('RealisatorModel',
                                  secondary=movie_realisators,
                                  lazy='subquery',
+                                 cascade='all',
                                  backref=db.backref('movie'))
-    synopsis = db.Column(db.Text)
     seen = db.Column(db.Boolean, nullable=False)
     trailer = db.Column(db.String(255))
     poster = db.Column(db.String(255))
@@ -116,6 +116,65 @@ class MovieModel(db.Model):
     series_season = db.Column(db.Integer)
     series_episodes = db.Column(db.Integer)
     series_episode_duration = db.Column(db.Integer)
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def to_json(movie):
+        return {
+            'id': movie.id,
+            'title': movie.title,
+            'title_original': movie.title_original,
+            'genre': movie.genre,
+            'country': movie.country,
+            'year': movie.year,
+            'duration': movie.duration,
+            'score': movie.score,
+            'synopsis': movie.synopsis,
+            'actors': [ ActorModel.to_json(a) for a in movie.actors ],
+            'realisators': [ RealisatorModel.to_json(r) for r in movie.realisator ],
+            'seen': movie.seen,
+            'trailer': movie.trailer,
+            'poster': movie.poster,
+            'background': movie.background,
+            'is_series': movie.is_series,
+            'series_season': movie.series_season,
+            'series_episodes': movie.series_episodes,
+            'series_episode_duration': movie.series_episode_duration
+        }
+
+    @classmethod
+    def find_by_name(cls, title, year=None, country=None, json=True):
+        movie = cls.query.filter_by(title=title, year=year, country=country).first()
+        if movie:
+            if json:
+                return dict(cls.to_json(movie))
+            else:
+                return movie
+        return None
+
+    @classmethod
+    def find_by_id(cls, id, json=True):
+        movie = cls.query.filter_by(id=id).first()
+        if movie:
+            if json:
+                return dict(cls.to_json(movie))
+            else:
+                return movie
+        return None
+
+    @classmethod
+    def delete_by_id(cls, id):
+        movie = cls.query.filter_by(id=id).first()
+        if not movie:
+            return False
+        movie.actors = []
+        movie.realisator = []
+        db.session.commit()
+        cls.query.filter_by(id=id).delete()
+        db.session.commit()
 
 
 class ActorModel(db.Model):
@@ -138,17 +197,23 @@ class ActorModel(db.Model):
         }
 
     @classmethod
-    def find_by_name(cls, first_name, last_name):
+    def find_by_name(cls, first_name, last_name, json=True):
         actor = cls.query.filter_by(first_name=first_name, last_name=last_name).first()
         if actor:
-            return dict(cls.to_json(actor))
+            if json:
+                return dict(cls.to_json(actor))
+            else:
+                return actor
         return None
 
     @classmethod
-    def find_by_id(cls, id):
+    def find_by_id(cls, id, json=True):
         actor = cls.query.filter_by(id=id).first()
         if actor:
-            return dict(cls.to_json(actor))
+            if json:
+                return dict(cls.to_json(actor))
+            else:
+                return actor
         return None
 
     @classmethod
@@ -181,17 +246,23 @@ class RealisatorModel(db.Model):
         }
 
     @classmethod
-    def find_by_name(cls, first_name, last_name):
-        actor = cls.query.filter_by(first_name=first_name, last_name=last_name).first()
-        if actor:
-            return dict(cls.to_json(actor))
+    def find_by_name(cls, first_name, last_name, json=True):
+        realisator = cls.query.filter_by(first_name=first_name, last_name=last_name).first()
+        if realisator:
+            if json:
+                return dict(cls.to_json(realisator))
+            else:
+                return realisator
         return None
 
     @classmethod
-    def find_by_id(cls, id):
-        actor = cls.query.filter_by(id=id).first()
-        if actor:
-            return dict(cls.to_json(actor))
+    def find_by_id(cls, id, json=True):
+        realisator = cls.query.filter_by(id=id).first()
+        if realisator:
+            if json:
+                return dict(cls.to_json(realisator))
+            else:
+                return realisator
         return None
 
     @classmethod

@@ -4,6 +4,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from run import app, api
 from .models import UserModel, RevokedTokenModel
+from datetime import datetime
 
 
 parser = reqparse.RequestParser()
@@ -30,7 +31,7 @@ class Registration(Resource):
 
         try:
             new_user.save_to_db()
-            access_token = create_access_token(identity=data['username'])
+            access_token = create_access_token(identity=data['username'], expires_delta=datetime.timedelta(hours=1))
             refresh_token = create_refresh_token(identity=data['username'])
             return {
                 'message': 'User {} was created'.format(data['username']),
@@ -51,7 +52,7 @@ class Login(Resource):
             return {'message': 'User {} doesn\'t exist'.format(data['username'])}, 400
 
         if UserModel.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=data['username'])
+            access_token = create_access_token(identity=data['username'], expires_delta=datetime.timedelta(hours=1))
             refresh_token = create_refresh_token(identity=data['username'])
             return {
                 'message': 'Logged in as {}'.format(current_user.username),
@@ -94,7 +95,7 @@ class TokenRefresh(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            access_token = create_access_token(identity=current_user)
+            access_token = create_access_token(identity=current_user, expires_delta=datetime.timedelta(hours=1))
             return {'access_token': access_token}, 200, {'jwt-token': access_token}
         except:
             return {'message': 'Your not authorized.'}, 401
