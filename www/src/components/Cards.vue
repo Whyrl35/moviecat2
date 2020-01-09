@@ -51,7 +51,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost:5000/v1/movies")
+      .get("http://moviecat.ks.whyrl.fr/api/v1/movies")
       .then(response => {
         this.movies = response.data.data.movies;
       })
