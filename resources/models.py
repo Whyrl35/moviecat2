@@ -5,7 +5,7 @@ from run import app
 if app.config['DATABASE']['type'] == 'sqlite':
     app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE']['sqlite']['uri']
 elif app.config['DATABASE']['type'] == 'mysql':
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql:///{username}:{password}@{host}/{database}".format(
+    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql:///{username}:{password}@{host}/{database}".format(
         username=app.config['DATABASE']['mysql']['user'],
         password=app.config['DATABASE']['mysql']['password'],
         host=app.config['DATABASE']['mysql']['host'],
