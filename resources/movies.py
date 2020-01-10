@@ -3,18 +3,40 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 from run import app, api
 from .models import MovieModel, ActorModel, RealisatorModel
 
+class MoviesCount(Resource):
+    def get(self):
+        movies = {'count': len(MovieModel.return_all())}
+        return {
+            "data": movies,
+            "message": "Successfuly returning the movie's count",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": None
+        }, 200
+
 
 class Movies(Resource):
-    # @swag_from('./../docs/movies_list.yml')
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('id', type=int, action='append', required=False, help="List of movie's id")
+        parser.add_argument('page', type=int, required=False, help="Pagination of movies")
+        parser.add_argument('count', type=int, required=False, default=10, help="Pagination of movies")
         args = parser.parse_args()
 
         if args.id:
             movies_list = list()
             for id in args.id:
                 movies_list.append(MovieModel.find_by_id(id))
+            movies = {'movies': movies_list}
+        elif args.page:
+            movies_list = list()
+            count = args.count
+            start = ((args.page - 1) * count) + 1
+            end = start + (count)
+            for id in range(start, end):
+                found = MovieModel.find_by_id(id)
+                if found:
+                    movies_list.append(found)
             movies = {'movies': movies_list}
         else:
             movies = {'movies': MovieModel.return_all()}
@@ -118,8 +140,6 @@ class Movie(Resource):
             movie = MovieModel()
             movie.title = args.title
             movie.title_original = args.title_original
-            movie.title = args.title
-            movie.title_original = args.title_original
             movie.genre = args.genre
             movie.country = args.country
             movie.year = args.year
@@ -205,7 +225,10 @@ class Movie(Resource):
             "cls": self.__class__.__name__,
             "args": args
             }, 200
+
+
 #
 # Adding resources:
 api.add_resource(Movies, '/v1/movies')
 api.add_resource(Movie, '/v1/movie')
+api.add_resource(MoviesCount, '/v1/movies/count')
