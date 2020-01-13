@@ -8,10 +8,13 @@
               v-bind:title="data.title"
               v-bind:sub-title="data.title_original"
               v-bind:img-src="data.poster"
+              v-bind:rating="data.score"
               img-alt="Image"
               img-top
               style="max-witdh: 20rem; width: 20rem"
               class="mb-2">
+              <star-rating v-bind:rating="data.score" :max-rating="max_rating" star-size='15' class="pb-2" read-only=true>
+              </star-rating>
               <b-button size="sm" :to="{ path: 'movie', params: { id: data.id }}" variant="outline-secondary">View details</b-button>
             </b-card>
           </b-col>
@@ -34,6 +37,7 @@
 
 <script>
 import axios from "axios";
+import StarRating from 'vue-star-rating';
 export default {
   methods: {
     linkGen(page) {
@@ -43,6 +47,7 @@ export default {
   data() {
     return {
       movies: [],
+      max_rating: 10,
       movieCount: 0,
       perPage: 10,
       currentPage: this.$route.query.page === undefined ? 1 : this.$route.query.page
@@ -72,6 +77,9 @@ export default {
       num_pages() {
         return this.movieCount / this.perPage + 1;
     }
-  }
+  },
+  components: {
+    StarRating
+  },
 };
 </script>
