@@ -55,7 +55,7 @@ export default {
   },
   mounted() {
     axios
-      .get("/api/v1/movies?count=" + this.perPage +  "&page=" + this.currentPage)
+      .get(process.env.VUE_APP_API_URL + "/v1/movies?count=" + this.perPage +  "&page=" + this.currentPage)
       .then(response => {
         this.movies = response.data.data.movies;
       })
@@ -64,7 +64,7 @@ export default {
         console.log(err);
       });
     axios
-      .get("/api/v1/movies/count")
+      .get(process.env.VUE_APP_API_URL + "/v1/movies/count")
       .then(response => {
         this.movieCount = response.data.data.count;
       })
