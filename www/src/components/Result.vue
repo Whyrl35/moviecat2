@@ -22,15 +22,9 @@
       </b-row>
     </div>
     <div v-else>
-      <h5>No movies available yet 😢</h5>
-    </div>
-    <div style="padding-top: 10px">
-      <b-pagination-nav
-        :number-of-pages="num_pages"
-        :link-gen="linkGen"
-        align="center"
-      >
-      </b-pagination-nav>
+        <div class="d-flex align-items-center justify-content-center" style="height:90vh">
+            <h3>No movies found with this information</h3>
+        </div>
     </div>
   </b-container>
 </template>
@@ -39,10 +33,8 @@
 import axios from "axios";
 import StarRating from 'vue-star-rating';
 export default {
-  methods: {
-    linkGen(page) {
-      return page === 1 ? '?' : `?page=${page}`
-    }
+  props: {
+    search_string: { type: String },
   },
   data() {
     return {
@@ -51,14 +43,11 @@ export default {
         max: 10,
         size: 15,
       },
-      movieCount: 0,
-      perPage: 10,
-      currentPage: this.$route.query.page === undefined ? 1 : this.$route.query.page
     };
   },
   mounted() {
     axios
-      .get(process.env.VUE_APP_API_URL + "/v1/movies?count=" + this.perPage +  "&page=" + this.currentPage)
+      .get(process.env.VUE_APP_API_URL + "/v1/movie/search")
       .then(response => {
         this.movies = response.data.data.movies;
       })
@@ -66,20 +55,6 @@ export default {
         this.movies = []
         console.log(err);
       });
-    axios
-      .get(process.env.VUE_APP_API_URL + "/v1/movies/count")
-      .then(response => {
-        this.movieCount = response.data.data.count;
-      })
-      .catch(err => {
-        this.movieCount = 0;
-        console.log(err);
-      });
-  },
-  computed: {
-      num_pages() {
-        return this.movieCount / this.perPage + 1;
-    }
   },
   components: {
     StarRating
