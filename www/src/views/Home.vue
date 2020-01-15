@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar />
+    <Navbar/>
     <Cards/>
   </div>
 </template>
@@ -12,6 +12,6 @@
     components: {
       Navbar,
       Cards
-    }
+    },
   }
 </script>
