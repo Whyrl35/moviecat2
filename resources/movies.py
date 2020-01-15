@@ -15,6 +15,31 @@ class MoviesCount(Resource):
         }, 200
 
 
+class MoviesSearch(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('search_string', type=str, required=True, help="Missing the search string")
+        args = parser.parse_args()
+
+        movies = MovieModel.query.filter(MovieModel.title.like("%{}%".format(args.search_string))).all()
+
+        if not movies:
+            jmovies = { 'movies': [] }
+        else:
+            movies_list = list()
+            for movie in movies:
+                movies_list.append(MovieModel.to_json(movie))
+            jmovies = { 'movies': movies_list }
+
+        return {
+            "data": jmovies,
+            "message": "Successfuly returning the found movie",
+            "file": __name__,
+            "cls": self.__class__.__name__,
+            "args": args
+        }, 200
+
+
 class Movies(Resource):
     def get(self):
         parser = reqparse.RequestParser()
@@ -232,3 +257,4 @@ class Movie(Resource):
 api.add_resource(Movies, '/v1/movies')
 api.add_resource(Movie, '/v1/movie')
 api.add_resource(MoviesCount, '/v1/movies/count')
+api.add_resource(MoviesSearch, '/v1/movies/search')

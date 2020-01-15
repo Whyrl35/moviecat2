@@ -18,5 +18,9 @@
         search_string: this.$route.params.string
       };
     },
+    beforeRouteUpdate(to, from, next) {
+      this.search_string = to.params.string;
+      next();
+    },
   }
 </script>
