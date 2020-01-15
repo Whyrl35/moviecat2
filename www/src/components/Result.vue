@@ -62,6 +62,21 @@ export default {
         });
       }
   },
+  mounted() {
+    axios
+    .get(process.env.VUE_APP_API_URL + "/v1/movies/search", {
+        params: {
+            search_string: this.search_string,
+            }
+        })
+    .then(response => {
+        this.movies = response.data.data.movies;
+    })
+    .catch(err => {
+        this.movies = []
+        console.log(err);
+    });
+  },
   components: {
     StarRating
   },

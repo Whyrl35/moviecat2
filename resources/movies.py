@@ -21,8 +21,7 @@ class MoviesSearch(Resource):
         parser.add_argument('search_string', type=str, required=True, help="Missing the search string")
         args = parser.parse_args()
 
-        movies = MovieModel.query.filter(MovieModel.title.like("%{}%".format(args.search_string))).all()
-
+        movies = MovieModel.query.filter(MovieModel.title.like("%{}%".format(args.search_string))).order_by(MovieModel.title).all()
         if not movies:
             jmovies = { 'movies': [] }
         else:
