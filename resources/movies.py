@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse, request
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from run import app, api
 from .models import MovieModel, ActorModel, RealisatorModel
+from sqlalchemy import func
 
 class MoviesCount(Resource):
     def get(self):
@@ -20,15 +21,33 @@ class MoviesSearch(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('search_string', type=str, required=True, help="Missing the search string")
         args = parser.parse_args()
+        movies_list = list()
 
         movies = MovieModel.query.filter(MovieModel.title.like("%{}%".format(args.search_string))).order_by(MovieModel.title).all()
-        if not movies:
-            jmovies = { 'movies': [] }
-        else:
-            movies_list = list()
+        if movies:
             for movie in movies:
                 movies_list.append(MovieModel.to_json(movie))
-            jmovies = { 'movies': movies_list }
+
+        # Do not work on sqlite
+        try:
+            actors = ActorModel.query.filter(func.concat(ActorModel.first_name, ' ', ActorModel.last_name).like("%{}%".format(args.search_string))).all()
+            if actors:
+                for actor in actors:
+                    for movie in actor.movie:
+                        movies_list.append(MovieModel.to_json(movie))
+        except:
+            pass
+
+        try:
+            realisators = RealisatorModel.query.filter(func.concat(RealisatorModel.first_name, ' ', RealisatorModel.last_name).like("%{}%".format(args.search_string))).all()
+            if realisators:
+                for realisator in realisators:
+                    for movie in realisator.movie:
+                        movies_list.append(MovieModel.to_json(movie))
+        except:
+            pass
+
+        jmovies = { 'movies': movies_list }
 
         return {
             "data": jmovies,

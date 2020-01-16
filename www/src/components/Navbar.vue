@@ -3,7 +3,7 @@
       <b-navbar toggleable="lg" type="dark" variant="dark" class="mb-3">
         <b-container fluid>
             <b-navbar-brand href="/">
-              <img src="~/../assets/moviecat.png" style="width: 32px; height: 32px" class="d-inline-block align-top" alt="Kitten">
+              <img src="~/../assets/moviecat.png" style="width: 32px; height: 32px" class="d-inline-block align-top mr-1" alt="Kitten">
               MovieCat
             </b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -38,11 +38,11 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            search: "",
-        }
-    },
+  data() {
+    return {
+      search: "",
+    }
+  },
   methods: {
     getMovie() {
       this.$router.push({ name: 'search', params: { string: this.search }});
