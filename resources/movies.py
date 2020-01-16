@@ -28,17 +28,24 @@ class MoviesSearch(Resource):
             for movie in movies:
                 movies_list.append(MovieModel.to_json(movie))
 
-        actors = ActorModel.query.filter(func.concat(ActorModel.first_name, ' ', ActorModel.last_name).like("%{}%".format(args.search_string))).all()
-        if actors:
-            for actor in actors:
-                for movie in actor.movie:
-                    movies_list.append(MovieModel.to_json(movie))
+        # Do not work on sqlite
+        try:
+            actors = ActorModel.query.filter(func.concat(ActorModel.first_name, ' ', ActorModel.last_name).like("%{}%".format(args.search_string))).all()
+            if actors:
+                for actor in actors:
+                    for movie in actor.movie:
+                        movies_list.append(MovieModel.to_json(movie))
+        except:
+            pass
 
-        realisators = RealisatorModel.query.filter(func.concat(RealisatorModel.first_name, ' ', RealisatorModel.last_name).like("%{}%".format(args.search_string))).all()
-        if realisators:
-            for realisator in realisators:
-                for movie in realisator.movie:
-                    movies_list.append(MovieModel.to_json(movie))
+        try:
+            realisators = RealisatorModel.query.filter(func.concat(RealisatorModel.first_name, ' ', RealisatorModel.last_name).like("%{}%".format(args.search_string))).all()
+            if realisators:
+                for realisator in realisators:
+                    for movie in realisator.movie:
+                        movies_list.append(MovieModel.to_json(movie))
+        except:
+            pass
 
         jmovies = { 'movies': movies_list }
 
