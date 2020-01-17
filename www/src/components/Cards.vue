@@ -5,7 +5,7 @@
         <mdb-col class="pb-4" sm="2" v-bind:key="data.id" v-for="data in movies">
           <mdb-card cascade>
             <mdb-view hover>
-							<img style="width: 20rem; max-width: 20rem; height: 25rem" :src="data.poster" alt="Card image cap" />
+							<img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
               <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
               <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie">View details</mdb-btn>
             </mdb-view>
@@ -57,7 +57,7 @@ export default {
       movie_id: 0,
       movieCount: 0,
       perPage: 12,
-      currentPage: this.$route.query.page === undefined ? 1 : this.$route.query.page
+      currentPage: this.$route.query.page === undefined ? 1 : this.$route.query.page,
     };
   },
   mounted() {
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
       num_pages() {
-        return this.movieCount / this.perPage;
+        return Math.ceil(this.movieCount / this.perPage);
     }
   },
   components: {

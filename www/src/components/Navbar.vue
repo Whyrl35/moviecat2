@@ -13,7 +13,7 @@
         <form @submit="getMovie" >
           <mdb-input type="text" class="text-white" placeholder="Search" aria-label="Search" label navInput waves waves-fixed v-model="search"/>
         </form>
-        <mdb-nav-item href="#" active class="ml-5">Login</mdb-nav-item>
+        <mdb-nav-item href="/login" active class="ml-5">Login</mdb-nav-item>
       </mdb-navbar-nav>
     </mdb-navbar-toggler>
   </mdb-navbar>
