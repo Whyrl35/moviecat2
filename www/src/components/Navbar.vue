@@ -1,40 +1,22 @@
 <template>
-    <div>
-      <b-navbar toggleable="lg" type="dark" variant="dark" class="mb-3">
-        <b-container fluid>
-            <b-navbar-brand href="/">
-              <img src="~/../assets/moviecat.png" style="width: 32px; height: 32px" class="d-inline-block align-top mr-1" alt="Kitten">
-              MovieCat
-            </b-navbar-brand>
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-            <b-collapse id="nav-collapse" is-nav>
-              <b-navbar-nav>
-                <b-nav-item href="/">List</b-nav-item>
-                <b-nav-item href="#" disabled>Add</b-nav-item>
-              </b-navbar-nav>
-              <!-- Right aligned nav items -->
-              <b-navbar-nav class="ml-auto">
-                <b-nav-form>
-                  <b-form-input
-                    size="sm"
-                    class="mr-sm-2"
-                    placeholder="Search for a movie"
-                    v-model="search"
-                    ></b-form-input>
-                  <b-button
-                    size="sm"
-                    class="my-2 my-sm-0"
-                    type="submit"
-                    variant="success"
-                    @click.prevent="getMovie"
-                    >Search</b-button>
-                </b-nav-form>
-                <b-nav-item href="/"  class="pl-4">Login</b-nav-item>
-              </b-navbar-nav>
-            </b-collapse>
-          </b-container>
-      </b-navbar>
-    </div>
+  <mdb-navbar color="mdb-color" dark class="mb-4" expand="large">
+    <mdb-navbar-brand href="/">
+      <img src="~/../assets/moviecat.png" style="width: 32px; height: 32px" class="d-inline-block align-top mr-1" alt="Kitten">
+      MovieCat
+    </mdb-navbar-brand>
+    <mdb-navbar-toggler>
+      <mdb-navbar-nav>
+        <mdb-nav-item href="/" active>List</mdb-nav-item>
+        <mdb-nav-item href="#" class="disabled" dibsable>Add</mdb-nav-item>
+      </mdb-navbar-nav>
+      <mdb-navbar-nav right>
+        <form @submit="getMovie" >
+          <mdb-input type="text" class="text-white" placeholder="Search" aria-label="Search" label navInput waves waves-fixed v-model="search"/>
+        </form>
+        <mdb-nav-item href="#" active class="ml-5">Login</mdb-nav-item>
+      </mdb-navbar-nav>
+    </mdb-navbar-toggler>
+  </mdb-navbar>
 </template>
 <script>
 export default {

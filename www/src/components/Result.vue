@@ -1,38 +1,44 @@
 <template>
-  <b-container fluid>
+  <mdb-container fluid>
     <div v-if="movies.length">
-      <b-row class="justify-content-md-center">
-        <div v-bind:key="data.id" v-for="data in movies">
-          <b-col l="4">
-            <b-card
-              v-bind:title="data.title"
-              v-bind:sub-title="data.title_original"
-              v-bind:img-src="data.poster"
-              v-bind:rating="data.score"
-              img-alt="Image"
-              img-top
-              style="max-witdh: 20rem; width: 20rem"
-              class="mb-2">
-              <star-rating v-bind:rating="data.score" :max-rating="rating.max" :star-size="rating.size" class="pb-2" read-only>
+      <mdb-row>
+        <mdb-col class="pb-4" sm="2" v-bind:key="data.id" v-for="data in movies">
+          <mdb-card cascade>
+            <mdb-view hover>
+							<img style="width: 20rem; max-width: 20rem" :src="data.poster" alt="Card image cap" />
+              <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
+              <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie">View details</mdb-btn>
+            </mdb-view>
+            <mdb-card-body cascade>
+              <mdb-card-title>{{ data.title }}</mdb-card-title>
+              <span class="grey-text">{{ data.title_original}}</span>
+            </mdb-card-body>
+            <mdb-card-footer class="text-center">
+              <star-rating :inline="true" :show-rating="false"  v-bind:rating="data.score" :max-rating="rating.max" :star-size="rating.size" class="" read-only>
               </star-rating>
-              <b-button size="sm" :to="{ path: 'movie', params: { id: data.id }}" variant="outline-secondary">View details</b-button>
-            </b-card>
-          </b-col>
-        </div>
-      </b-row>
+            </mdb-card-footer>
+          </mdb-card>
+        </mdb-col>
+      </mdb-row>
     </div>
     <div v-else>
         <div class="d-flex align-items-center justify-content-center" style="height:90vh">
             <h3>No movies found with this information</h3>
         </div>
     </div>
-  </b-container>
+  </mdb-container>
 </template>
 
 <script>
 import axios from "axios";
 import StarRating from 'vue-star-rating';
 export default {
+  methods: {
+    goMovie() {
+      this.$router.push({ name: 'movie', params: { id: this.movie_id }});
+    },
+  },
+
   props: {
     search_string: { type: String },
   },
