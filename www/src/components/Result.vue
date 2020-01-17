@@ -5,7 +5,7 @@
         <mdb-col class="pb-4" sm="2" v-bind:key="data.id" v-for="data in movies">
           <mdb-card cascade>
             <mdb-view hover>
-							<img style="width: 20rem; max-width: 20rem" :src="data.poster" alt="Card image cap" />
+              <img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
               <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
               <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie">View details</mdb-btn>
             </mdb-view>
