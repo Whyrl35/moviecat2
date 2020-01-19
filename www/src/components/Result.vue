@@ -2,7 +2,7 @@
   <mdb-container fluid>
     <div v-if="movies.length">
       <mdb-row>
-        <mdb-col class="pb-4" sm="2" v-bind:key="data.id" v-for="data in movies">
+        <mdb-col class="pb-4 col-12 col-sm-6 col-md-4 col-lg-2" v-bind:key="data.id" v-for="data in movies">
           <mdb-card cascade>
             <mdb-view hover>
               <img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
