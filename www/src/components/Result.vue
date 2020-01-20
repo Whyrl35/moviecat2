@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import StarRating from 'vue-star-rating';
 export default {
   methods: {
@@ -53,7 +52,7 @@ export default {
   },
   watch: {
       search_string: function(value) {
-        axios
+        this.$http
         .get(process.env.VUE_APP_API_URL + "/v1/movies/search", {
             params: {
                 search_string: value,
@@ -69,7 +68,7 @@ export default {
       }
   },
   mounted() {
-    axios
+    this.$http
     .get(process.env.VUE_APP_API_URL + "/v1/movies/search", {
         params: {
             search_string: this.search_string,

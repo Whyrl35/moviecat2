@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import StarRating from 'vue-star-rating';
 export default {
   methods: {
@@ -61,7 +60,7 @@ export default {
     };
   },
   mounted() {
-    axios
+    this.$http
       .get(process.env.VUE_APP_API_URL + "/v1/movies?count=" + this.perPage +  "&page=" + this.currentPage)
       .then(response => {
         this.movies = response.data.data.movies;
@@ -70,7 +69,7 @@ export default {
         this.movies = []
         console.log(err);
       });
-    axios
+    this.$http
       .get(process.env.VUE_APP_API_URL + "/v1/movies/count")
       .then(response => {
         this.movieCount = response.data.data.count;
