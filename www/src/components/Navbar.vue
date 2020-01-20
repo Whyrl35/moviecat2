@@ -7,7 +7,7 @@
     <mdb-navbar-toggler>
       <mdb-navbar-nav>
         <mdb-nav-item href="/" active>List</mdb-nav-item>
-        <mdb-nav-item href="#" class="disabled" dibsable>Add</mdb-nav-item>
+        <span v-if="isLoggedIn"><mdb-nav-item href="/add">Add</mdb-nav-item></span>
       </mdb-navbar-nav>
       <mdb-navbar-nav right>
         <form @submit="getMovie" >

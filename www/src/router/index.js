@@ -5,6 +5,7 @@ import Home from '../views/Home.vue'
 import Movie from '../views/Movie.vue'
 import Search from '../views/Search.vue'
 import Login from '../views/Login.vue'
+import Add from '../views/Add.vue'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,15 @@ const routes = [
     name: 'search',
     component: Search
   },
+  {
+    path: '/add',
+    name: 'add',
+    component: Add,
+    meta: {
+      requiresAuth: true
+    }
+  },
+
 ]
 
 const router = new VueRouter({
