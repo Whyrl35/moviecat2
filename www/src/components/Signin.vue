@@ -34,7 +34,7 @@ export default {
       let username = this.username
       let password = this.password
       this.$store.dispatch('login', { username, password })
-      .then(() => this.$router.push('/'))
+      .then(() => this.$router.push({ name: 'home'}))
       .catch(err => {
         //may need to raise a popup/alert/stuff like that
         this.$bvToast.toast(err.message, {

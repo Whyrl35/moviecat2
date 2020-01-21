@@ -6,15 +6,15 @@
     </mdb-navbar-brand>
     <mdb-navbar-toggler>
       <mdb-navbar-nav>
-        <mdb-nav-item href="/" active>List</mdb-nav-item>
-        <span v-if="isLoggedIn"><mdb-nav-item href="/add">Add</mdb-nav-item></span>
+        <router-link to="/"><mdb-nav-item tag="a" active>List</mdb-nav-item></router-link>
+        <span v-if="isLoggedIn"><router-link to="/add"><mdb-nav-item tag="a">Add</mdb-nav-item></router-link></span>
       </mdb-navbar-nav>
       <mdb-navbar-nav right>
         <form @submit="getMovie" >
           <mdb-input type="text" class="text-white" placeholder="Search" aria-label="Search" label navInput waves waves-fixed v-model="search"/>
         </form>
         <span v-if="isLoggedIn"><mdb-nav-item @click.native="logout" active class="ml-5">Logout</mdb-nav-item></span>
-        <span v-else><mdb-nav-item href="/login" active class="ml-5">Login</mdb-nav-item></span>
+        <span v-else><mdb-nav-item :to="{ name: 'login'}" active class="ml-5">Login</mdb-nav-item></span>
       </mdb-navbar-nav>
     </mdb-navbar-toggler>
   </mdb-navbar>
@@ -34,7 +34,7 @@ export default {
     logout: function () {
       this.$store.dispatch('logout')
       .then(() => {
-        this.$router.push('/login')
+        this.$router.push({ name: 'login'})
       })
     }
   },
