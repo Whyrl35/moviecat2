@@ -1,22 +1,53 @@
 <template>
 <div>
+  <container class="mt-5">
+    <mdb-modal :show="showDeleteModal" @close="showDeleteModal = false">
+      <mdb-modal-header>
+        <mdb-modal-title>Deleting movie?</mdb-modal-title>
+      </mdb-modal-header>
+      <mdb-modal-body>Are you sure you want to delete the movie</mdb-modal-body>
+      <mdb-modal-footer>
+        <mdb-btn color="mdb-color" @click.native="showDeleteModal = false">Close</mdb-btn>
+        <mdb-btn color="danger" @click.native="deleteMovie">Deleting</mdb-btn>
+      </mdb-modal-footer>
+    </mdb-modal>
+  </container>
   <div class="backdrop" :style="{ background: computedBackground }">
     <div class="content">
       <mdb-container fluid class="p-5">
         <mdb-row  class="justify-content-md-center">
-          <mdb-col col="3" md="2">
-            <img :src="this.poster" class="img-thumbnail mx-auto zoom" alt="Responsive image">
+          <mdb-col col="3" xl="2">
+            <img :src="this.poster" class="img-thumbnail zoom w-100" alt="Responsive image">
             <div v-if="this.readonly">
-              <mdb-btn block color="default" size="sm" tag="a" router @click.native="editMovie">Editing Movie</mdb-btn>
+                <mdb-row class="no-gutters">
+                  <mdb-col col="12" lg="6">
+                    <mdb-btn block color="default" size="sm" tag="a" router @click.native="editMovie">Editing</mdb-btn>
+                  </mdb-col>
+                  <mdb-col col="12" lg="6">
+                    <mdb-btn block color="danger" size="sm" tag="a" router @click.native="showDeleteModal = true">Deleting</mdb-btn>
+                  </mdb-col>
+                </mdb-row>
             </div>
             <div v-else>
               <mdb-btn block color="success" size="sm" tag="a" router @click.native="addMovie">Adding Movie</mdb-btn>
             </div>
           </mdb-col>
-          <mdb-col col="9" md="4">
+          <mdb-col col="9" xl="5">
           <div v-if="this.readonly">
-            <h1>{{title}}</h1>
-            fixme!
+            <h1><strong>{{title}}</strong></h1>
+            <h5 class="grey-text">{{title_original}}</h5>
+            <mdb-row class="pt-2">
+              <mdb-col col="6">
+                <star-rating :show-rating="true"  v-bind:rating="score" :max-rating="10" :star-size="20" class="" read-only/>
+              </mdb-col>
+              <mdb-col col="6">
+                <mdb-icon icon="play" class="green-text mr-2" />play trailer
+              </mdb-col>
+            </mdb-row>
+            <h3 class="pt-5">Synopsis</h3>
+            <p>{{ this.synopsis }}</p>
+            <h3 class="pt-2">Genres</h3>
+            <p>{{ this.genre.replace(/,/g, ', ') }}</p>
           </div>
           <div v-else>
             <mdb-input size="lg" label="Title" v-model="title" bg/>
@@ -50,9 +81,27 @@
   <div>
       <mdb-container fluid class="p-1">
         <mdb-row  class="justify-content-md-center">
-          <mdb-col col="12" md="6">
+          <mdb-col col="10" xl="6">
           <div v-if="this.readonly">
-            Fixme
+            <h2 class="pt-3">Casting</h2>
+            <p>{{ this.actors.join(', ') }}</p>
+            <h2 class="pt-3">Realisators</h2>
+            <p>{{ this.realisators.join(', ') }}</p>
+            <mdb-row>
+              <mdb-col>
+                <h2 class="pt-3">Duration</h2>
+                <p>{{ this.duration }} minutes</p>
+              </mdb-col>
+              <mdb-col>
+                <h2 class="pt-3">Year</h2>
+                <p>{{ this.year }}</p>
+              </mdb-col>
+              <mdb-col>
+                <h2 class="pt-3">Seen</h2>
+                <mdb-icon icon="check-circle" class="green-text mr-2" v-if="seen"/>
+                <mdb-icon icon="times-circle" class="red-text mr-2" v-else/>
+              </mdb-col>
+            </mdb-row>
           </div>
           <div v-else>
             <mdb-input label="Actors" v-model="actors" outline/>
@@ -114,6 +163,7 @@ export default {
       series_season: null,
       series_episodes: null,
       series_episodes_duration: null,
+      showDeleteModal: false,
     }
   },
   computed: {
@@ -222,6 +272,21 @@ export default {
     }
   },
   methods: {
+    deleteMovie() {
+      this.$http.delete(process.env.VUE_APP_API_URL + "/v1/movie", { params: {id: this.id }})
+      .then(() => {
+        this.$router.push({ name: 'home'});
+      })
+      .catch(err => {
+        this.$bvToast.toast(err.message, {
+          title: 'Error during movie deletion',
+          autoHideDelay:  15000,
+          variant: 'danger',
+          solid: true,
+          appendToast: true
+        });
+      })
+    },
     editMovie() {
       alert("not implemented yet")
     },

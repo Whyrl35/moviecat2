@@ -72,15 +72,11 @@ class Movies(Resource):
                 movies_list.append(MovieModel.find_by_id(id))
             movies = {'movies': movies_list}
         elif args.page:
-            movies_list = list()
+            all = MovieModel.return_all()
             count = args.count
-            start = ((args.page - 1) * count) + 1
+            start = ((args.page - 1) * count)
             end = start + (count)
-            for id in range(start, end):
-                found = MovieModel.find_by_id(id)
-                if found:
-                    movies_list.append(found)
-            movies = {'movies': movies_list}
+            movies = {'movies': all[start:end]}
         else:
             movies = {'movies': MovieModel.return_all()}
 
@@ -171,16 +167,9 @@ class Movie(Resource):
         args = parser.parse_args()
 
         movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country)
-        if movie:
-            return {
-                "data": {'movie': movie},
-                "message": "Movie already exists",
-                "file": __name__,
-                "cls": self.__class__.__name__,
-                "args": args
-                }, 200
-        try:
+        if not movie:
             movie = MovieModel()
+        try:
             movie.title = args.title
             movie.title_original = args.title_original
             movie.genre = args.genre
