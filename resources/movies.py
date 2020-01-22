@@ -166,7 +166,7 @@ class Movie(Resource):
         parser.add_argument('series_episodes_duration', type=int, required=False, help="Missing the serie's episodes duration in minutes")
         args = parser.parse_args()
 
-        movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country)
+        movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country, json=False)
         if not movie:
             movie = MovieModel()
         try:

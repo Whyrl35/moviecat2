@@ -288,7 +288,7 @@ export default {
       })
     },
     editMovie() {
-      alert("not implemented yet")
+      this.$router.push({ name: 'add_movie', params: { id: this.id, type: this.type, data: null, readonly: false}})
     },
     addMovie() {
       this.$http.post(process.env.VUE_APP_API_URL + "/v1/movie", {
