@@ -7,7 +7,7 @@
             <mdb-view hover>
               <img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
               <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
-              <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie">View details</mdb-btn>
+              <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie(data.id)">View details</mdb-btn>
             </mdb-view>
             <mdb-card-body cascade>
               <mdb-card-title>{{ data.title }}</mdb-card-title>
@@ -33,8 +33,8 @@
 import StarRating from 'vue-star-rating';
 export default {
   methods: {
-    goMovie() {
-      this.$router.push({ name: 'movie', params: { id: this.movie_id }});
+    goMovie(id) {
+      this.$router.push({ name: 'movie', params: { id: id }});
     },
   },
 
