@@ -1,5 +1,5 @@
 <template>
-  <mdb-container fluid>
+  <mdb-container fluid class="mt-4">
     <mdb-row  class="justify-content-md-center">
       <mdb-col col="12" md="6">
         <mdb-input label="Search on TMDB" placeholder="Movie name" v-model="tmdb_movie" @keyup.native='getResult(tmdb_movie)'/>
@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: 'search',
+  name: 'search_tmdb',
   data () {
     return {
       tmdb_movie: '',
@@ -45,8 +45,7 @@ export default {
     addMovie(id,type) {
       this.$http.get('https://api.themoviedb.org/3/' + type + '/' + id + '?api_key=6b25c34634150747b40cf03be77fda85&language=fr-FR')
       .then(response => {
-        //FIXME: here go to another component and prefill the data with repsonse.data.
-        alert(response.data.title || response.data.name);
+        this.$router.push({ name: 'add_movie', params: { id: id, type: type, data: response.data, readonly: false}})
       });
     }
   }

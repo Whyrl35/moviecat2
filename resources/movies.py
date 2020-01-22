@@ -108,7 +108,7 @@ class Movies(Resource):
         movies = {'movies': movies_list}
         return {
             "data": movies,
-            "message": "Successfuly deleting the realisator list",
+            "message": "Successfuly deleting the movie list",
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args
@@ -236,7 +236,7 @@ class Movie(Resource):
                 }, 500
         return {
             "data": {'movie': MovieModel.to_json(movie)},
-            "message": "Successfuly adding the realisator",
+            "message": "Successfuly adding the movie",
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args

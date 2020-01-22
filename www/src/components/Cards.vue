@@ -1,5 +1,5 @@
 <template>
-  <mdb-container fluid>
+  <mdb-container fluid class="mt-4">
     <div v-if="movies.length">
       <mdb-row>
         <mdb-col class="pb-4 col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"  v-bind:key="data.id" v-for="data in movies">
@@ -7,7 +7,7 @@
             <mdb-view hover>
 							<img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
               <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
-              <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie">View details</mdb-btn>
+              <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie(data.id)">View details</mdb-btn>
             </mdb-view>
             <mdb-card-body cascade>
               <mdb-card-title>{{ data.title }}</mdb-card-title>
@@ -39,8 +39,8 @@
 import StarRating from 'vue-star-rating';
 export default {
   methods: {
-    goMovie() {
-      this.$router.push({ name: 'movie', params: { id: this.movie_id }});
+    goMovie(id) {
+      this.$router.push({ name: 'movie', params: { id: id }});
     },
     linkGen(page) {
       return page === 1 ? '?' : `?page=${page}`

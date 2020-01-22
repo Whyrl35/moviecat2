@@ -1,5 +1,5 @@
 <template>
-  <mdb-container fluid>
+  <mdb-container fluid class="mt-4">
     <div v-if="movies.length">
       <mdb-row>
         <mdb-col class="pb-4 col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" v-bind:key="data.id" v-for="data in movies">

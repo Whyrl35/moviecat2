@@ -16,10 +16,11 @@
     data() {
       return {
         s_id: this.$route.params.id,
-        s_type: 'movie',
-        s_data: null,
-        s_ro: true,
+        s_type: this.$route.params.type,
+        s_data: this.$route.params.data,
+        s_ro: this.$route.params.readonly,
       };
     },
+
   }
 </script>

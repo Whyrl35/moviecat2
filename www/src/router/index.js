@@ -6,6 +6,7 @@ import Movie from '../views/Movie.vue'
 import Search from '../views/Search.vue'
 import Login from '../views/Login.vue'
 import Add from '../views/Add.vue'
+import AddMovie from '../views/AddMovie.vue'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,14 @@ const routes = [
     path: '/add',
     name: 'add',
     component: Add,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/add/:type/:id',
+    name: 'add_movie',
+    component: AddMovie,
     meta: {
       requiresAuth: true
     }
