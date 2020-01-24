@@ -81,6 +81,9 @@ export default {
   },
   computed: {
       num_pages() {
+        if (this.movieCount <= 0) {
+          return 1;
+        }
         return Math.ceil(this.movieCount / this.perPage);
     }
   },

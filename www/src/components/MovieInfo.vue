@@ -1,6 +1,6 @@
 <template>
 <div>
-  <container class="mt-5">
+  <mdb-container name="xhr-error" class="mt-5">
     <mdb-modal :show="showDeleteModal" @close="showDeleteModal = false">
       <mdb-modal-header>
         <mdb-modal-title>Deleting movie?</mdb-modal-title>
@@ -11,14 +11,14 @@
         <mdb-btn color="danger" @click.native="deleteMovie">Deleting</mdb-btn>
       </mdb-modal-footer>
     </mdb-modal>
-  </container>
+  </mdb-container>
   <div class="backdrop" :style="{ background: computedBackground }">
     <div class="content">
       <mdb-container fluid class="p-5">
         <mdb-row  class="justify-content-md-center">
           <mdb-col col="3" xl="2">
             <img :src="this.poster" class="img-thumbnail zoom w-100" alt="Responsive image">
-            <div v-if="this.readonly">
+            <div v-if="this.readonly && isLoggedIn">
                 <mdb-row class="no-gutters">
                   <mdb-col col="12" lg="6">
                     <mdb-btn block color="default" size="sm" tag="a" router @click.native="editMovie">Editing</mdb-btn>
@@ -28,7 +28,7 @@
                   </mdb-col>
                 </mdb-row>
             </div>
-            <div v-else>
+            <div v-if="!this.readonly && isLoggedIn">
               <mdb-btn block color="success" size="sm" tag="a" router @click.native="addMovie">Adding Movie</mdb-btn>
             </div>
           </mdb-col>
@@ -151,10 +151,10 @@ export default {
       country: "",
       year: "",
       duration: "",
-      score: "",
+      score: 0,
       synopsis: "",
-      actors: "",
-      realisators: "",
+      actors: [],
+      realisators: [],
       seen: false,
       trailer: "",
       poster: "",
@@ -169,6 +169,9 @@ export default {
   computed: {
     computedBackground() {
       return "rgba(0, 0, 0, 0.75) url('" + this.background + "') no-repeat fixed center center / cover ";
+    },
+    isLoggedIn() {
+       return this.$store.getters.isLoggedIn;
     }
   },
   mounted() {
