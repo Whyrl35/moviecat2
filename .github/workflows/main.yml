@@ -30,3 +30,25 @@ jobs:
         with:
           name: build
           path: www/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: build
+          path: www/dist
+      - name: deploy on webserver
+        uses: horochx/deploy-via-scp@master
+        with:
+          local: www/dist # eg: dist
+          remote: ${{ secrets.REMOTE }}
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          user: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
