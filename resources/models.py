@@ -166,8 +166,11 @@ class MovieModel(db.Model):
         return None
 
     @classmethod
-    def return_all(cls):
-        return list(map(lambda x: cls.to_json(x), cls.query.all()))
+    def return_all(cls, json=True):
+        if json:
+            return list(map(lambda x: cls.to_json(x), cls.query.order_by(MovieModel.title).all()))
+        else:
+            return cls.query.order_by(MovieModel.title).all()
 
     @classmethod
     def delete_by_id(cls, id):
