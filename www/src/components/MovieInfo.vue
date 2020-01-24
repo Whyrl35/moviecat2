@@ -1,6 +1,6 @@
 <template>
 <div>
-  <mdb-container name="xhr-error" class="mt-5">
+  <mdb-container name="xhr-error" >
     <mdb-modal :show="showDeleteModal" @close="showDeleteModal = false">
       <mdb-modal-header>
         <mdb-modal-title>Deleting movie?</mdb-modal-title>
