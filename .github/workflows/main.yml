@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: build-deploy
 
 on:
   push:
@@ -6,7 +6,11 @@ on:
       - master
 
 jobs:
-  build:
+
+  #
+  # can add a job to test Python (lint + pytest)
+
+  build-yarn:
     name: Build
     runs-on: ubuntu-latest
     steps:
