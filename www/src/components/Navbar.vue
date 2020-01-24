@@ -1,6 +1,6 @@
 <template>
   <mdb-navbar color="mdb-color" dark class="" expand="large">
-    <mdb-navbar-brand href="/">
+    <mdb-navbar-brand href="/" :to="{ name: 'home'}">
       <img src="~/../assets/moviecat.png" style="width: 32px; height: 32px" class="d-inline-block align-top mr-1" alt="Kitten">
       MovieCat
     </mdb-navbar-brand>
