@@ -11,7 +11,7 @@ jobs:
   # can add a job to test Python (lint + pytest)
 
   build-yarn:
-    name: Build
+    name: Build Yarn
     runs-on: ubuntu-latest
     steps:
       - name: Yarn Installation
