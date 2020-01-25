@@ -2,7 +2,7 @@
   <!-- Card -->
   <mdb-container>
   <mdb-row class="justify-content-md-center pt-5">
-  <mdb-col md="5" col="12">
+  <mdb-col xl="6" md="8" sm="10" col="12">
   <mdb-card>
     <mdb-card-body>
         <form @submit.prevent="login">
