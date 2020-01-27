@@ -102,6 +102,20 @@
                 <mdb-icon icon="times-circle" class="red-text mr-2" v-else/>
               </mdb-col>
             </mdb-row>
+            <mdb-row>
+              <mdb-col>
+                <h2 class="pt-3">Saison</h2>
+                <p>{{ this.series_season }}</p>
+              </mdb-col>
+              <mdb-col>
+                <h2 class="pt-3">Episodes</h2>
+                <p>{{ this.series_episodes }}</p>
+              </mdb-col>
+              <mdb-col>
+                <h2 class="pt-3">Ep. Duration</h2>
+                <p>{{ this.series_episode_duration }} minutes</p>
+              </mdb-col>
+            </mdb-row>
           </div>
           <div v-else>
             <mdb-input label="Actors" v-model="actors" outline/>
@@ -114,7 +128,7 @@
               <hr/>
               <mdb-input label="Season" v-model="series_season" outline/>
               <mdb-input label="Episodes" v-model="series_episodes" outline/>
-              <mdb-input label="Duration" v-model="series_episodes_duration" outline/>
+              <mdb-input label="Duration" v-model="series_episode_duration" outline/>
             </div>
           </div>
           </mdb-col>
@@ -162,7 +176,7 @@ export default {
       is_series: false,
       series_season: null,
       series_episodes: null,
-      series_episodes_duration: null,
+      series_episode_duration: null,
       showDeleteModal: false,
     }
   },
@@ -200,7 +214,7 @@ export default {
         this.is_series = response.data.data.movie.is_series;
         this.series_season = response.data.data.movie.series_season;
         this.series_episodes = response.data.data.movie.series_episodes;
-        this.series_episodes_duration = response.data.data.movie.series_episodes_duration;
+        this.series_episode_duration = response.data.data.movie.series_episode_duration;
       });
     }
     else {
@@ -216,13 +230,13 @@ export default {
         this.year = date.getFullYear();
         this.series_season = this.data.seasons.slice(-1)[0].season_number;
         this.series_episodes = this.data.seasons.slice(-1)[0].episode_count;
-        this.series_episodes_duration = this.data.episode_run_time[0];
+        this.series_episode_duration = this.data.episode_run_time[0];
         if (this.data.seasons.slice(-1)[0].overview !== "") {
           this.synopsis = this.data.seasons.slice(-1)[0].overview;
         } else {
           this.synopsis = this.data.overview;
         }
-        this.duration = this.series_episodes * this.series_episodes_duration;
+        this.duration = this.series_episodes * this.series_episode_duration;
         this.poster = 'http://image.tmdb.org/t/p/w500' + this.data.seasons.slice(-1)[0].poster_path;
 
         this.$http.get('https://api.themoviedb.org/3/tv/' + this.id + '/credits?api_key=6b25c34634150747b40cf03be77fda85&language=fr-FR')
@@ -257,7 +271,7 @@ export default {
         this.is_series = false;
         this.series_season = null;
         this.series_episodes = null;
-        this.series_episodes_duration = null;
+        this.series_episode_duration = null;
 
         this.$http.get('https://api.themoviedb.org/3/movie/' + this.id + '/videos?api_key=6b25c34634150747b40cf03be77fda85&language=fr-FR')
         .then(response => {
@@ -312,7 +326,7 @@ export default {
         is_series: this.is_series,
         series_season: this.series_season,
         series_episodes: this.series_episodes,
-        series_episodes_duration: this.series_episodes_duration,
+        series_episode_duration: this.series_episode_duration,
       })
       .then(response => {
         this.$bvToast.toast(response.data.message, {
@@ -346,7 +360,7 @@ export default {
         if (this.data.seasons[val-1].overview !== "") {
           this.synopsis = this.data.seasons[val-1].overview;
         }
-        this.duration = this.series_episodes * this.series_episodes_duration;
+        this.duration = this.series_episodes * this.series_episode_duration;
         this.poster = 'http://image.tmdb.org/t/p/w500' + this.data.seasons[val-1].poster_path;
         this.title = this.data.name + " - saison " + this.series_season;
       }

@@ -163,7 +163,7 @@ class Movie(Resource):
         parser.add_argument('is_series', type=bool, required=False, help="Missing the series flag")
         parser.add_argument('series_season', type=int, required=False, help="Missing the serie's season")
         parser.add_argument('series_episodes', type=int, required=False, help="Missing the serie's episodes numbers")
-        parser.add_argument('series_episodes_duration', type=int, required=False, help="Missing the serie's episodes duration in minutes")
+        parser.add_argument('series_episode_duration', type=int, required=False, help="Missing the serie's episodes duration in minutes")
         args = parser.parse_args()
 
         movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country, json=False)
@@ -185,7 +185,7 @@ class Movie(Resource):
             movie.is_series = args.is_series
             movie.series_season = args.series_season
             movie.series_episodes = args.series_episodes
-            movie.series_episodes_duration = args.series_episodes_duration
+            movie.series_episode_duration = args.series_episode_duration
 
             for actor_str in args.actors.split(','):
                 if len(actor_str) <= 0:
