@@ -102,6 +102,7 @@
                 <mdb-icon icon="times-circle" class="red-text mr-2" v-else/>
               </mdb-col>
             </mdb-row>
+            <div v-if="is_series">
             <mdb-row>
               <mdb-col>
                 <h2 class="pt-3">Saison</h2>
@@ -116,6 +117,7 @@
                 <p>{{ this.series_episode_duration }} minutes</p>
               </mdb-col>
             </mdb-row>
+            </div>
           </div>
           <div v-else>
             <mdb-input label="Actors" v-model="actors" outline/>
@@ -339,8 +341,8 @@ export default {
         })
       })
       .catch(err => {
-        this.$bvToast.toast(err.message, {
-          title: 'Error during movie edition',
+        this.$bvToast.toast(err.response.error, {
+          title: err.message,
           autoHideDelay:  15000,
           variant: 'danger',
           solid: true,
