@@ -188,6 +188,8 @@ class Movie(Resource):
             movie.series_episodes_duration = args.series_episodes_duration
 
             for actor_str in args.actors.split(','):
+                if len(actor_str) <= 0:
+                    continue
                 first, *last = actor_str.split()
                 last = " ".join(last)
                 actor = ActorModel.find_by_name(first, last, json=False)
@@ -201,6 +203,8 @@ class Movie(Resource):
                     movie.actors.append(actor)
 
             for realisator_str in args.realisators.split(','):
+                if len(realisator_str) <= 0:
+                    continue
                 first, *last = realisator_str.split()
                 last = " ".join(last)
                 realisator = RealisatorModel.find_by_name(first, last, json=False)

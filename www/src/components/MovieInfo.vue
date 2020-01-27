@@ -336,6 +336,22 @@ export default {
       });
     }
   },
+  watch: {
+    series_season: function(val, old_val) {
+      if (old_val !== null && val !== "") {
+        const date = new Date(this.data.seasons[val-1].air_date);
+        this.year = date.getFullYear();
+        this.series_season = this.data.seasons[val-1].season_number;
+        this.series_episodes = this.data.seasons[val-1].episode_count;
+        if (this.data.seasons[val-1].overview !== "") {
+          this.synopsis = this.data.seasons[val-1].overview;
+        }
+        this.duration = this.series_episodes * this.series_episodes_duration;
+        this.poster = 'http://image.tmdb.org/t/p/w500' + this.data.seasons[val-1].poster_path;
+        this.title = this.data.name + " - saison " + this.series_season;
+      }
+    }
+  },
   components: {
     StarRating
   },
