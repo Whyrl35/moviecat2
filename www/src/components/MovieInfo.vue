@@ -41,7 +41,17 @@
                 <star-rating :show-rating="true"  v-bind:rating="score" :max-rating="10" :star-size="20" class="" read-only/>
               </mdb-col>
               <mdb-col col="6">
-                <mdb-icon icon="play" class="green-text mr-2" />play trailer
+                <a @click="showTrailer = true"><mdb-icon icon="play" class="green-text mr-2" />play trailer</a>
+                <mdb-modal size="lg" :show="showTrailer" @close="showTrailer = false">
+                  <mdb-modal-body class="mb-0 p-0">
+                    <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
+                      <iframe class="embed-responsive-item"  :src="trailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  </mdb-modal-body>
+                  <mdb-modal-footer class="justify-content-center">
+                    <mdb-btn outline="primary" rounded size="md" class="ml-4" @click.native="showTrailer = false">Close</mdb-btn>
+                  </mdb-modal-footer>
+                </mdb-modal>
               </mdb-col>
             </mdb-row>
             <h3 class="pt-5">Synopsis</h3>
@@ -180,6 +190,7 @@ export default {
       series_episodes: null,
       series_episode_duration: null,
       showDeleteModal: false,
+      showTrailer: false,
     }
   },
   computed: {
@@ -277,7 +288,7 @@ export default {
 
         this.$http.get('https://api.themoviedb.org/3/movie/' + this.id + '/videos?api_key=6b25c34634150747b40cf03be77fda85&language=fr-FR')
         .then(response => {
-          this.trailer = 'https://www.themoviedb.org/video/play?key=' + response.data.results[0].key + '&width=1449&height=814';
+          this.trailer = 'https://www.youtube.com/embed/' + response.data.results[0].key;
         })
 
         this.$http.get('https://api.themoviedb.org/3/movie/' + this.id + '/credits?api_key=6b25c34634150747b40cf03be77fda85&language=fr-FR')
