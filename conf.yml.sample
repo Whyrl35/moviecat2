@@ -4,9 +4,11 @@ jwt_secret_key: '__your_very_secret__'
 ## Image management
 images:
   poster:
-    path: /var/moviecat/static/poster
+    path: /var/www/moviecat/www/static/posters
+    base_url: /static/posters
   backdrop:
-    path: /var/moviecat/static/backdrop
+    path: /var/www/moviecat/www/static/backdrops
+    base_url: /static/backdrops
 
 ## Database type and access
 database:

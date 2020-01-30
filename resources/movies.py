@@ -173,7 +173,7 @@ class Movie(Resource):
         movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country, json=False)
         if not movie:
             movie = MovieModel()
-        if True: #try:
+        try:
             movie.title = args.title
             movie.title_original = args.title_original
             movie.genre = args.genre
@@ -222,7 +222,16 @@ class Movie(Resource):
                     movie.realisator.append(realisator)
 
             movie.save_to_db()
+        except:
+            return {
+                "data": None,
+                "error": "Error during movie creation",
+                "file": __name__,
+                "cls": self.__class__.__name__,
+                "args": args
+                }, 500
 
+        try:
             r = requests.get(movie.poster, stream=True)
             if r.status_code == 200:
                 with open("{}/{}.{}".format(
@@ -232,7 +241,7 @@ class Movie(Resource):
                     ), 'wb') as f:
                     r.raw.decode_content = True
                     shutil.copyfileobj(r.raw, f)
-            movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
+                    movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
 
             r = requests.get(movie.background, stream=True)
             if r.status_code == 200:
@@ -243,18 +252,18 @@ class Movie(Resource):
                     ), 'wb') as f:
                     r.raw.decode_content = True
                     shutil.copyfileobj(r.raw, f)
-            movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
-
-            movie.save_to_db()
-
-        else: #except:
+                    movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
+        except:
             return {
                 "data": None,
-                "error": "Error during movie creation",
+                "error": "Error during poster/backdrop management",
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
                 }, 500
+        else:
+            movie.save_to_db()
+
         return {
             "data": {'movie': MovieModel.to_json(movie)},
             "message": "Successfuly adding the movie",
