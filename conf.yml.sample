@@ -1,8 +1,13 @@
-##
 ## Secret key that is used to encode all token
 jwt_secret_key: '__your_very_secret__'
 
-##
+## Image management
+images:
+  poster:
+    path: /var/moviecat/static/poster
+  backdrop:
+    path: /var/moviecat/static/backdrop
+
 ## Database type and access
 database:
   type: sqlite
@@ -15,7 +20,6 @@ database:
     password: moviecat
     database: moviecat
 
-##
 ## Super user
 superadmin:
   - admin

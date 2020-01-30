@@ -3,6 +3,9 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 from run import app, api
 from .models import MovieModel, ActorModel, RealisatorModel
 from sqlalchemy import func
+import requests
+import shutil
+import os
 
 class MoviesCount(Resource):
     def get(self):
@@ -110,6 +113,7 @@ class Movies(Resource):
             "args": args
         }, 201
 
+
 class Movie(Resource):
     def get(self):
         parser = reqparse.RequestParser()
@@ -169,7 +173,7 @@ class Movie(Resource):
         movie = MovieModel.find_by_name(args.title, year=args.year, country=args.country, json=False)
         if not movie:
             movie = MovieModel()
-        try:
+        if True: #try:
             movie.title = args.title
             movie.title_original = args.title_original
             movie.genre = args.genre
@@ -219,7 +223,31 @@ class Movie(Resource):
 
             movie.save_to_db()
 
-        except:
+            r = requests.get(movie.poster, stream=True)
+            if r.status_code == 200:
+                with open("{}/{}.{}".format(
+                          app.config['IMAGES']['poster']['path'],
+                          movie.id,
+                          movie.poster.split('.')[-1]
+                    ), 'wb') as f:
+                    r.raw.decode_content = True
+                    shutil.copyfileobj(r.raw, f)
+            movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
+
+            r = requests.get(movie.background, stream=True)
+            if r.status_code == 200:
+                with open("{}/{}.{}".format(
+                          app.config['IMAGES']['backdrop']['path'],
+                          movie.id,
+                          movie.background.split('.')[-1]
+                    ), 'wb') as f:
+                    r.raw.decode_content = True
+                    shutil.copyfileobj(r.raw, f)
+            movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
+
+            movie.save_to_db()
+
+        else: #except:
             return {
                 "data": None,
                 "error": "Error during movie creation",
