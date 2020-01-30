@@ -9,7 +9,7 @@ import os
 
 class MoviesCount(Resource):
     def get(self):
-        movies = {'count': len(MovieModel.return_all())}
+        movies = {'count': MovieModel.count_rows()}
         return {
             "data": movies,
             "message": "Successfuly returning the movie's count",

@@ -1,5 +1,6 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from run import app
 
 if app.config['DATABASE']['type'] == 'sqlite':
@@ -154,6 +155,12 @@ class MovieModel(db.Model):
             else:
                 return movie
         return None
+
+    @classmethod
+    def count_rows(cls):
+        count_q = cls.query.statement.with_only_columns([func.count()]).order_by(None)
+        count = cls.query.session.execute(count_q).scalar()
+        return count
 
     @classmethod
     def find_by_id(cls, id, json=True):
