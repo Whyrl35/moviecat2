@@ -233,28 +233,30 @@ class Movie(Resource):
 
         try:
             if app.config['IMAGES']['poster']['base_url'] not in movie.poster:
-                r = requests.get(movie.poster, stream=True)
-                if r.status_code == 200:
-                    with open("{}/{}.{}".format(
-                            app.config['IMAGES']['poster']['path'],
-                            movie.id,
-                            movie.poster.split('.')[-1]
-                        ), 'wb') as f:
-                        r.raw.decode_content = True
-                        shutil.copyfileobj(r.raw, f)
-                        movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
+                if '.' in movie.poster:
+                    r = requests.get(movie.poster, stream=True)
+                    if r.status_code == 200:
+                        with open("{}/{}.{}".format(
+                                app.config['IMAGES']['poster']['path'],
+                                movie.id,
+                                movie.poster.split('.')[-1]
+                            ), 'wb') as f:
+                            r.raw.decode_content = True
+                            shutil.copyfileobj(r.raw, f)
+                            movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
 
             if app.config['IMAGES']['backdrop']['base_url'] not in movie.background:
-                r = requests.get(movie.background, stream=True)
-                if r.status_code == 200:
-                    with open("{}/{}.{}".format(
-                            app.config['IMAGES']['backdrop']['path'],
-                            movie.id,
-                            movie.background.split('.')[-1]
-                        ), 'wb') as f:
-                        r.raw.decode_content = True
-                        shutil.copyfileobj(r.raw, f)
-                        movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
+                if '.' in movie.poster:
+                    r = requests.get(movie.background, stream=True)
+                    if r.status_code == 200:
+                        with open("{}/{}.{}".format(
+                                app.config['IMAGES']['backdrop']['path'],
+                                movie.id,
+                                movie.background.split('.')[-1]
+                            ), 'wb') as f:
+                            r.raw.decode_content = True
+                            shutil.copyfileobj(r.raw, f)
+                            movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
         except:
             return {
                 "data": None,
