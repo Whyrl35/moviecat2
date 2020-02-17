@@ -5,6 +5,7 @@ from .models import MovieModel, ActorModel, RealisatorModel
 from sqlalchemy import func
 import re
 
+
 class GlobalStatistics(Resource):
     def get(self):
         stats = {}
@@ -14,12 +15,12 @@ class GlobalStatistics(Resource):
         avg_duration_q = MovieModel.query.filter(MovieModel.is_series == False).statement.with_only_columns([func.avg(MovieModel.duration)])
         avg_score_q = MovieModel.query.filter(MovieModel.is_series == False).statement.with_only_columns([func.avg(MovieModel.score)])
         stats['movies'] = {
-            'count': MovieModel.query.session.execute(count_q).scalar(),
+            'count': int(MovieModel.query.session.execute(count_q).scalar()),
             'duration': {
-                'total': MovieModel.query.session.execute(sum_duration_q).scalar(),
-                'avg': MovieModel.query.session.execute(avg_duration_q).scalar(),
+                'total': int(MovieModel.query.session.execute(sum_duration_q).scalar()),
+                'avg': float(MovieModel.query.session.execute(avg_duration_q).scalar()),
             },
-            'score': MovieModel.query.session.execute(avg_score_q).scalar(),
+            'score': float(MovieModel.query.session.execute(avg_score_q).scalar()),
         }
 
         count_q = MovieModel.query.filter(MovieModel.is_series == True).statement.with_only_columns([func.count()])
@@ -28,13 +29,13 @@ class GlobalStatistics(Resource):
         avg_duration_q = MovieModel.query.filter(MovieModel.is_series == True).statement.with_only_columns([func.avg(MovieModel.duration)])
         avg_score_q = MovieModel.query.filter(MovieModel.is_series == True).statement.with_only_columns([func.avg(MovieModel.score)])
         stats['series'] = {
-            'count': MovieModel.query.session.execute(count_q).scalar(),
-            'episodes': MovieModel.query.session.execute(sum_q).scalar(),
+            'count': int(MovieModel.query.session.execute(count_q).scalar()),
+            'episodes': int(MovieModel.query.session.execute(sum_q).scalar()),
             'duration': {
-                'total':  MovieModel.query.session.execute(sum_duration_q).scalar(),
-                'avg': MovieModel.query.session.execute(avg_duration_q).scalar(),
+                'total':  int(MovieModel.query.session.execute(sum_duration_q).scalar()),
+                'avg': float(MovieModel.query.session.execute(avg_duration_q).scalar()),
             },
-            'score': MovieModel.query.session.execute(avg_score_q).scalar(),
+            'score': float(MovieModel.query.session.execute(avg_score_q).scalar()),
         }
 
         movies = MovieModel.return_all(json=False)
@@ -49,15 +50,15 @@ class GlobalStatistics(Resource):
                     all_genres[low] += 1
 
         stats['genres'] = {
-            'count':  len(all_genres.keys()),
+            'count':  int(len(all_genres.keys())),
             'count_by_genres': all_genres
         }
 
         count_seen_q = MovieModel.query.filter(MovieModel.seen == True).statement.with_only_columns([func.count()])
         count_total_q = MovieModel.query.statement.with_only_columns([func.count()])
         stats['seen'] = {
-            'total': MovieModel.query.session.execute(count_total_q).scalar(),
-            'seen': MovieModel.query.session.execute(count_seen_q).scalar(),
+            'total': int(MovieModel.query.session.execute(count_total_q).scalar()),
+            'seen': int(MovieModel.query.session.execute(count_seen_q).scalar()),
         }
 
         return {
@@ -67,6 +68,7 @@ class GlobalStatistics(Resource):
             "cls": self.__class__.__name__,
             "args": None
         }, 200
+
 
 #
 # Adding resources:
