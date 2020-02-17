@@ -6,8 +6,9 @@
     </mdb-navbar-brand>
     <mdb-navbar-toggler>
       <mdb-navbar-nav>
-        <router-link to="/"><mdb-nav-item tag="a" active>List</mdb-nav-item></router-link>
+        <router-link :to="{ name: 'home' }"><mdb-nav-item tag="a" active>List</mdb-nav-item></router-link>
         <span v-if="isLoggedIn"><router-link to="/add"><mdb-nav-item tag="a">Add</mdb-nav-item></router-link></span>
+        <router-link :to="{ name: 'stats' }"><mdb-nav-item tag="a" active>Statistics</mdb-nav-item></router-link>
       </mdb-navbar-nav>
       <mdb-navbar-nav right>
         <form @submit="getMovie" >

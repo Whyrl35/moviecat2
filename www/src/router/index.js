@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import store from '../store.js'
 import Home from '../views/Home.vue'
 import Movie from '../views/Movie.vue'
+import Stats from '../views/Stats.vue'
 import Search from '../views/Search.vue'
 import Login from '../views/Login.vue'
 import Add from '../views/Add.vue'
@@ -41,6 +42,11 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/statistics',
+    name: 'stats',
+    component: Stats,
   },
   {
     path: '/add/:type/:id',
