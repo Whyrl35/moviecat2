@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 # from flasgger import Swagger, LazyJSONEncoder
 import yaml
+import os
 
 with open("conf.yml", 'r') as config_file:
     configuration = yaml.load(config_file, Loader=yaml.FullLoader)
@@ -18,11 +19,12 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['SUPERADMIN_USERS'] = configuration['superadmin']
 app.config['DATABASE'] = configuration['database']
 app.config['IMAGES'] = configuration['images']
+app.config['WHOOSHEE_DIR'] = '{cwd}/.indexes'.format(cwd=os.getcwd())
 
 api = Api(app)
 jwt = JWTManager(app)
 
-from resources import *                                                     # pylint: disable=unused-wildcard-import
+from resources import *  # noqa
 
 
 @jwt.token_in_blacklist_loader

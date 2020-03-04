@@ -5,6 +5,7 @@
 # Apps file to ignore
 app.db
 conf.yml
+.indexes
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

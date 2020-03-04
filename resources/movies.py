@@ -1,11 +1,11 @@
-from flask_restful import Resource, reqparse, request
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask_restful import Resource, reqparse
+from flask_jwt_extended import jwt_required
 from run import app, api
 from .models import MovieModel, ActorModel, RealisatorModel
-from sqlalchemy import func
 import requests
 import shutil
-import os
+import sqlalchemy
+
 
 class MoviesCount(Resource):
     def get(self):
@@ -26,31 +26,12 @@ class MoviesSearch(Resource):
         args = parser.parse_args()
         movies_list = list()
 
-        movies = MovieModel.query.filter(MovieModel.title.like("%{}%".format(args.search_string))).order_by(MovieModel.title).all()
+        movies = MovieModel.query.whooshee_search(args.search_string, match_substrings=False, order_by_relevance=-1)
         if movies:
             for movie in movies:
                 movies_list.append(MovieModel.to_json(movie))
 
-        # Do not work on sqlite
-        try:
-            actors = ActorModel.query.filter(func.concat(ActorModel.first_name, ' ', ActorModel.last_name).like("%{}%".format(args.search_string))).all()
-            if actors:
-                for actor in actors:
-                    for movie in actor.movie:
-                        movies_list.append(MovieModel.to_json(movie))
-        except:
-            pass
-
-        try:
-            realisators = RealisatorModel.query.filter(func.concat(RealisatorModel.first_name, ' ', RealisatorModel.last_name).like("%{}%".format(args.search_string))).all()
-            if realisators:
-                for realisator in realisators:
-                    for movie in realisator.movie:
-                        movies_list.append(MovieModel.to_json(movie))
-        except:
-            pass
-
-        jmovies = { 'movies': movies_list }
+        jmovies = {'movies': movies_list}
 
         return {
             "data": jmovies,
@@ -129,23 +110,23 @@ class Movie(Resource):
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
-                }, 404
-        except:
+            }, 404
+        except sqlalchemy.exc.SQLAlchemyError:
             return {
                 "data": None,
                 "error": "Error during execution",
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
-                }, 500
+            }, 500
 
         return {
-            "data": { 'movie': movie },
+            "data": {'movie': movie},
             "message": "Successfuly fetching movie",
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args
-            }, 200
+        }, 200
 
     @jwt_required
     def post(self):
@@ -222,14 +203,14 @@ class Movie(Resource):
                     movie.realisator.append(realisator)
 
             movie.save_to_db()
-        except:
+        except sqlalchemy.exc.SQLAlchemyError:
             return {
                 "data": None,
                 "error": "Error during movie creation",
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
-                }, 500
+            }, 500
 
         try:
             if app.config['IMAGES']['poster']['base_url'] not in movie.poster:
@@ -240,7 +221,7 @@ class Movie(Resource):
                                 app.config['IMAGES']['poster']['path'],
                                 movie.id,
                                 movie.poster.split('.')[-1]
-                            ), 'wb') as f:
+                        ), 'wb') as f:
                             r.raw.decode_content = True
                             shutil.copyfileobj(r.raw, f)
                             movie.poster = "{}/{}.{}".format(app.config['IMAGES']['poster']['base_url'], movie.id, movie.poster.split('.')[-1])
@@ -253,18 +234,18 @@ class Movie(Resource):
                                 app.config['IMAGES']['backdrop']['path'],
                                 movie.id,
                                 movie.background.split('.')[-1]
-                            ), 'wb') as f:
+                        ), 'wb') as f:
                             r.raw.decode_content = True
                             shutil.copyfileobj(r.raw, f)
                             movie.background = "{}/{}.{}".format(app.config['IMAGES']['backdrop']['base_url'], movie.id, movie.poster.split('.')[-1])
-        except:
+        except OSError:
             return {
                 "data": None,
                 "error": "Error during poster/backdrop management",
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
-                }, 500
+            }, 500
         else:
             movie.save_to_db()
 
@@ -274,7 +255,7 @@ class Movie(Resource):
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args
-            }, 201
+        }, 201
 
     @jwt_required
     def delete(self):
@@ -282,18 +263,16 @@ class Movie(Resource):
         parser.add_argument('id', type=int, required=True, help="Missing the ID of the movie")
         args = parser.parse_args()
 
-        #try:
-        if True:
+        try:
             MovieModel.delete_by_id(args.id)
-        #except:
-        else:
+        except sqlalchemy.exec.SQLAlchemyError:
             return {
                 "data": None,
                 "error": "Error during movie deletion, or it don't exists",
                 "file": __name__,
                 "cls": self.__class__.__name__,
                 "args": args
-                }, 404
+            }, 404
 
         return {
             "data": None,
@@ -301,7 +280,7 @@ class Movie(Resource):
             "file": __name__,
             "cls": self.__class__.__name__,
             "args": args
-            }, 200
+        }, 200
 
 
 #

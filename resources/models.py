@@ -1,7 +1,12 @@
 from passlib.hash import pbkdf2_sha256 as sha256
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, exc
 from run import app
+from flask_sqlalchemy import SQLAlchemy
+from flask_whooshee import Whooshee, AbstractWhoosheer
+import whoosh
+
+# FIXME: https://github.com/blakev/Flask-WhooshAlchemy3
+# need to index movie on title, seen, is_series
 
 if app.config['DATABASE']['type'] == 'sqlite':
     app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE']['sqlite']['uri']
@@ -15,10 +20,13 @@ elif app.config['DATABASE']['type'] == 'mysql':
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+whooshee = Whooshee(app)
+
 
 @app.before_first_request
 def create_tables():
     db.create_all()
+    whooshee.reindex()
 
 
 class UserModel(db.Model):
@@ -51,7 +59,7 @@ class UserModel(db.Model):
             num_rows_deleted = db.session.query(cls).delete()
             db.session.commit()
             return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-        except:
+        except exc.SQLAlchemyError:
             return {'message': 'Something went wrong'}
 
     @staticmethod
@@ -79,18 +87,17 @@ class RevokedTokenModel(db.Model):
 
 
 movie_actors = db.Table('movie_actors',
-    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
-    db.Column('actor_id', db.Integer, db.ForeignKey('actor.id')),
-)
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
+                        db.Column('actor_id', db.Integer, db.ForeignKey('actor.id')),)
 movie_realisators = db.Table('movie_realisators',
-    db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
-    db.Column('realisator_id', db.Integer, db.ForeignKey('realisator.id')),
-)
+                             db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
+                             db.Column('realisator_id', db.Integer, db.ForeignKey('realisator.id')),)
 
 
 class MovieModel(db.Model):
     __tablename__ = 'movie'
     __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True, autoincrement="auto")
     title = db.Column(db.String(255), nullable=False)
     title_original = db.Column(db.String(255))
@@ -134,8 +141,8 @@ class MovieModel(db.Model):
             'duration': movie.duration,
             'score': movie.score,
             'synopsis': movie.synopsis,
-            'actors': [ ActorModel.to_json(a) for a in movie.actors ],
-            'realisators': [ RealisatorModel.to_json(r) for r in movie.realisator ],
+            'actors': [ActorModel.to_json(a) for a in movie.actors],
+            'realisators': [RealisatorModel.to_json(r) for r in movie.realisator],
             'seen': movie.seen,
             'trailer': movie.trailer,
             'poster': movie.poster,
@@ -191,6 +198,7 @@ class MovieModel(db.Model):
         db.session.commit()
 
 
+@whooshee.register_model('first_name', 'last_name')
 class ActorModel(db.Model):
     __tablename__ = 'actor'
     __table_args__ = {'extend_existing': True}
@@ -240,6 +248,7 @@ class ActorModel(db.Model):
         db.session.commit()
 
 
+@whooshee.register_model('first_name', 'last_name')
 class RealisatorModel(db.Model):
     __tablename__ = 'realisator'
     __table_args__ = {'extend_existing': True}
@@ -287,3 +296,50 @@ class RealisatorModel(db.Model):
     def delete_by_id(cls, id):
         cls.query.filter_by(id=id).delete()
         db.session.commit()
+
+
+@whooshee.register_whoosheer
+class MovieWhooseer(AbstractWhoosheer):
+    schema = whoosh.fields.Schema(
+        moviemodel_id=whoosh.fields.NUMERIC(stored=True, unique=True),
+        title=whoosh.fields.TEXT(),
+        title_original=whoosh.fields.TEXT(),
+        synopsis=whoosh.fields.TEXT(),
+        genre=whoosh.fields.TEXT(),
+        score=whoosh.fields.NUMERIC(float),
+        year=whoosh.fields.NUMERIC(),
+        seen=whoosh.fields.BOOLEAN(),
+        is_series=whoosh.fields.BOOLEAN(),
+    )
+
+    models = [MovieModel]
+
+    @classmethod
+    def update_moviemodel(cls, writer, moviemodel):
+        writer.update_document(moviemodel_id=moviemodel.id,
+                               title=moviemodel.title,
+                               title_original=moviemodel.title_original,
+                               synopsis=moviemodel.synopsis,
+                               genre=moviemodel.genre,
+                               score=moviemodel.score,
+                               year=moviemodel.year,
+                               seen=moviemodel.seen,
+                               is_series=moviemodel.is_series,
+                               )
+
+    @classmethod
+    def insert_moviemodel(cls, writer, moviemodel):
+        writer.add_document(moviemodel_id=moviemodel.id,
+                            title=moviemodel.title,
+                            title_original=moviemodel.title_original,
+                            synopsis=moviemodel.synopsis,
+                            genre=moviemodel.genre,
+                            score=moviemodel.score,
+                            year=moviemodel.year,
+                            seen=moviemodel.seen,
+                            is_series=moviemodel.is_series,
+                            )
+
+    @classmethod
+    def delete_moviemodel(cls, writer, moviemodel):
+        writer.delete_by_term('moviemodel_id', moviemodel.id)
