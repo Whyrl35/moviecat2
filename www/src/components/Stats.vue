@@ -166,7 +166,7 @@ export default {
         this.genres_count = response.data.data.genres.count;
         this.total = response.data.data.seen.total;
         this.seen_count = response.data.data.seen.seen;
-        this.progress.seen = (this.seen_count * 100) / this.total;
+        this.progress.seen = Math.round(((this.seen_count * 100) / this.total + 0.00001) * 100) / 100;
 
         let keys = Object.keys(response.data.data.genres.count_by_genres);
         keys.sort(function(a,b) {return response.data.data.genres.count_by_genres[b] - response.data.data.genres.count_by_genres[a]});
