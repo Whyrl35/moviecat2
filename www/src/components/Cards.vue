@@ -6,7 +6,7 @@
           <mdb-card cascade>
             <mdb-view hover>
 							<img style="width: 100%; height: 25rem" :src="data.poster" alt="Card image cap" />
-              <mdb-mask flex-center waves overlay="white-slight"></mdb-mask>
+              <mdb-mask flex-center waves overlay="white-slight" @click.native="goMovie(data.id)"></mdb-mask>
               <mdb-btn block color="mdb-color" size="sm" tag="a" router @click.native="goMovie(data.id)">View details</mdb-btn>
             </mdb-view>
             <mdb-card-body cascade>
